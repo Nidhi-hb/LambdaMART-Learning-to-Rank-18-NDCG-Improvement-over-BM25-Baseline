@@ -128,8 +128,7 @@ LambdaGrad computes pairwise `|ΔNDCG|` for every swapped document pair and weig
 - Document quality signals (PageRank, CTR) add information BM25 structurally cannot represent
 - Query intent features separate navigational queries (where one perfect result exists) from informational queries (where recall matters more)
 
-**Why RobustScaler?**
-BM25 and LM scores have heavy-tailed distributions. RobustScaler uses the IQR instead of variance, preventing outlier scores from distorting the feature space.
+
 
 ---
 

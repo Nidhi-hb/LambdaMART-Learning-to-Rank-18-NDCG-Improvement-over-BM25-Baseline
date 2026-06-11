@@ -61,13 +61,7 @@ Future work
 - Export model to ONNX for low-latency serving and A/B testing integration.
 - Extend to multilingual and cross-lingual retrieval.
 
-References
-- Burges (2010) — RankNet/LambdaRank/LambdaMART overview.
-- Robertson & Zaragoza (2009) — BM25 and probabilistic relevance framework.
-- Ke et al. (2017) — LightGBM.
-- Akiba et al. (2019) — Optuna.
 
-Would you like this shortened further into a single-paragraph elevator pitch or expanded into ready-to-copy resume bullets (one-liners with metrics)?
 
 ## 📊 Offline Evaluation Results
 

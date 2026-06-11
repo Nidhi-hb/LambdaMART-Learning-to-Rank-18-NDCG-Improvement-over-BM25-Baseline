@@ -4,6 +4,7 @@
 
 ---
 
+
 ## 📌 Problem Statement
 
 Traditional retrieval systems like BM25 rely purely on lexical term matching, which fails to capture:
@@ -16,6 +17,57 @@ Traditional retrieval systems like BM25 rely purely on lexical term matching, wh
 This project bridges that gap by training a **LambdaMART gradient boosted tree ranker** that directly optimises NDCG — the gold-standard ranking metric — using 36 carefully engineered orthogonal features.
 
 ---
+A production-grade Learning-to-Rank system using LambdaMART that achieves +18.8% NDCG@10 improvement over a BM25 baseline on a 2M query-document pair corpus. The system includes a full offline evaluation harness, a 36-feature engineering pipeline covering lexical, semantic, document-quality and query-intent signals, and automated hyperparameter tuning with Optuna.
+
+Problem addressed
+Lexical retrieval (BM25) misses document quality signals, semantic similarity, and query intent. This project trains a LambdaMART ranker that directly optimizes NDCG and combines lexical, semantic, and engagement features to improve ranking quality.
+
+Key results
+- NDCG@10: +18.8% improvement over BM25 baseline on held-out test set (group-aware split, 60 test queries).
+- NDCG@5: +23.3%, NDCG@20: +14.2%.
+- Achieved target improvement with robust offline evaluation and no query leakage across splits.
+
+System components
+- Retrieval baseline: Okapi BM25 (k1=1.2, b=0.75) used both as retrieval baseline and as a feature.
+- Ranker: LambdaMART (LightGBM rank:ndcg objective) using LambdaGrad pairwise updates that weight gradients by |ΔNDCG|.
+- Feature pipeline: 36 orthogonal features across six groups (BM25 family, term overlap, TF statistics, document quality, query intent, semantic similarity).
+- Hyperparameter tuning: Optuna bayesian search over num_leaves, learning_rate, subsample, regularization.
+
+Engineering highlights
+- Group-aware data splits to prevent query leakage across train/val/test.
+- Standalone fallback implementation in NumPy + scikit-learn that reimplements LambdaGrad updates (no LightGBM dependency).
+- Smoke-test mode to validate pipeline without real data.
+- Training curve shows steady NDCG@10 improvement to convergence.
+
+Files & usage
+- lambdamart_ranker.py: production system (LightGBM backend, 36 features).
+- lambdamart_complete.py: self-contained NumPy + sklearn version.
+- tune.py: Optuna hyperparameter tuning script (saves best_params.json).
+- README.md: usage and setup instructions.
+- Quick commands: install dependencies, run with corpus (docs.tsv + pairs.jsonl), run smoke test, run tune.
+
+Feature groups (36 total)
+- BM25 family (6): BM25 body/title/URL/anchor, b=0 variant, k1=2.0 variant.
+- Term overlap (6): IDF sum, query-term coverage, exact phrase match, query/doc length.
+- TF statistics (6): TF mean, max, min, sum, variance, TF-IDF sum.
+- Document quality (6): PageRank, CTR, dwell time, freshness, spam score, domain authority.
+- Query intent (6): clarity, navigational/informational flag, frequency, click rate.
+- Semantic similarity (6): Cosine TF-IDF, BM25 rank percentile, Dirichlet LM, F2Exp, bigram/trigram overlap.
+
+
+Future work
+- Add dense retrieval features (BERT/bi-encoder embeddings).
+- Online learning with click feedback and online LambdaMART.
+- Export model to ONNX for low-latency serving and A/B testing integration.
+- Extend to multilingual and cross-lingual retrieval.
+
+References
+- Burges (2010) — RankNet/LambdaRank/LambdaMART overview.
+- Robertson & Zaragoza (2009) — BM25 and probabilistic relevance framework.
+- Ke et al. (2017) — LightGBM.
+- Akiba et al. (2019) — Optuna.
+
+Would you like this shortened further into a single-paragraph elevator pitch or expanded into ready-to-copy resume bullets (one-liners with metrics)?
 
 ## 📊 Offline Evaluation Results
 

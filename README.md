@@ -4,7 +4,6 @@
 
 ---
 
-
 ## 📌 Problem Statement
 
 Traditional retrieval systems like BM25 rely purely on lexical term matching, which fails to capture:
@@ -33,11 +32,6 @@ System components
 - Feature pipeline: 36 orthogonal features across six groups (BM25 family, term overlap, TF statistics, document quality, query intent, semantic similarity).
 - Hyperparameter tuning: Optuna bayesian search over num_leaves, learning_rate, subsample, regularization.
 
-Engineering highlights
-- Group-aware data splits to prevent query leakage across train/val/test.
-- Standalone fallback implementation in NumPy + scikit-learn that reimplements LambdaGrad updates (no LightGBM dependency).
-- Smoke-test mode to validate pipeline without real data.
-- Training curve shows steady NDCG@10 improvement to convergence.
 
 Files & usage
 - lambdamart_ranker.py: production system (LightGBM backend, 36 features).
